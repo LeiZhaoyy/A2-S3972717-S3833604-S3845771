@@ -8,9 +8,11 @@ class LinkedList
 public:
     LinkedList();
     ~LinkedList();
-
+    void insertNode(const FoodItem& food); // Insert a node into the linked list
+    void displayList() const; // Display the linked list
     // more functions to be added perhaps...
-
+    void displayMenu() const;
+    void loadFromFile(const std::string& filename);
 private:
     // the beginning of the list
     Node* head;

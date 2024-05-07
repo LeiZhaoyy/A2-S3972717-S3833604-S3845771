@@ -7,19 +7,36 @@
  * Make sure free memory and close all files before exiting the program.
  **/
 
-// Function to handle option 1: Display Meal Options
-void displayMealOptions() {
-    // Implement logic to display meal options
-    std::cout << "Meal options are displayed here.\n";
-}
 
 
 int main(int argc, char **argv)
 {
     /* validate command line arguments */
-    // TODO
+    bool running = true;
+    while (running){ 
 
-    std::cout << "Just a test, nothing implemented yet!" << std::endl;
+ if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <foodsfile> <coinsfile>" << std::endl;
+        running = false;
+    }
+
+    // Extract filenames from command line arguments
+    std::string foodsFile = argv[1];
+    std::string coinsFile = argv[2];
+
+    // Create an instance of the LinkedList class
+    LinkedList foodList;
+
+    // Load food data from the specified file
+    foodList.loadFromFile(foodsFile);
+
+    // Now foodList contains the loaded food data, you can use it to display the menu or perform other operations
+
+
+
+
+
+
     std::cout << "Main Menu" << std::endl;
     std::cout << "    1. Display Meal Options" << std::endl;
     std::cout << "    2. Purchase Meal" << std::endl;
@@ -30,7 +47,20 @@ int main(int argc, char **argv)
     std::cout << "    6. Display Balance" << std::endl;
     std::cout << "    7. Display Balance" << std::endl;
 std::cout << "Select your option (1-7) :"<<std::endl;
+            int choice;
 
-    while 
+            std::cin >> choice;
+
+
+    if (choice == 1){
+            foodList.displayMenu();
+
+    }
+    else{
+        running = false;
+    }
+    }
+   
+    
     return EXIT_SUCCESS;
 }
