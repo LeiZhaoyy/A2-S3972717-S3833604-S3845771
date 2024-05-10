@@ -56,15 +56,14 @@ bool Helper::isNumber(string s)
 			nb_dots++;
 			if (nb_dots > 1)
 			{
-				break;
+				return !s.empty() && s[0] != dot && it == s.end();
 			}
 		}
 		else if (!isdigit(*it))
 		{
-			break;
+			return !s.empty() && s[0] != dot && it == s.end();
 		}
 
 		++it;
 	}
-	return !s.empty() && s[0] != dot && it == s.end();
 }
