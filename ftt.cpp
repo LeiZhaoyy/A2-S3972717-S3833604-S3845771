@@ -10,6 +10,7 @@ int main(int argc, char** argv)
 	//	return EXIT_FAILURE;
 	//}
 
+
 	//// Extract filenames from command line arguments
 	//std::string foodsFile = argv[1];
 	//std::string coinsFile = argv[2];
@@ -24,28 +25,46 @@ int main(int argc, char** argv)
 	{
 		Helper::printMainMenu();
 
-		switch (Helper::requestMenuSelection())
+		int option = Helper::requestMenuSelection();
+
+		if (option == 1)
 		{
-			case 1:
-				break;
 
-			case 2:
-				break;
+		}
+		else if (option == 2)
+		{
 
-			case 4:
-				break;
+		}
+		else if (option == 3)
+		{
+			return EXIT_SUCCESS;
+		}
+		else if (option == 4)
+		{
 
-			case 5:
-				break;
+		}
+		else if (option == 5)
+		{
 
-			case 6:
-				break;
+		}
+		else if (option == 6)
+		{
 
-			case 7:
-				break;
+		}
+		else if (option == 7)
+		{
 
-			default:
-				return EXIT_SUCCESS;
+		}
+		else if (option == 2)
+		{
+
+		}
+		else if (option == 2)
+		{
+
+
+
+
 		}
 	}
 }
