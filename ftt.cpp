@@ -10,6 +10,7 @@ int main(int argc, char** argv)
 	//	return EXIT_FAILURE;
 	//}
 
+
 	//// Extract filenames from command line arguments
 	//std::string foodsFile = argv[1];
 	//std::string coinsFile = argv[2];
@@ -60,6 +61,9 @@ int main(int argc, char** argv)
 		}
 		else if (option == 2)
 		{
+
+
+
 
 		}
 	}
