@@ -13,6 +13,8 @@ public:
     // more functions to be added perhaps...
     void displayMenu() const;
     void loadFromFile(const std::string& filename);
+
+    FoodItem* getFoodItemById(const std::string& id) const;
 private:
     // the beginning of the list
     Node* head;

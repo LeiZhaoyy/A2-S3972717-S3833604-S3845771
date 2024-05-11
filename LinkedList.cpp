@@ -71,33 +71,48 @@ void LinkedList::loadFromFile(const std::string& filename) {
         std::string id, name, description, priceStr;
 
         // Read data separated by '|'
-        if (!(std::getline(iss, id, '|') >> std::ws &&
-              std::getline(iss, name, '|') >> std::ws &&
-              std::getline(iss, description, '|') >> std::ws &&
-              std::getline(iss, priceStr))) {
+        if (std::getline(iss, id, '|') >> std::ws &&
+            std::getline(iss, name, '|') >> std::ws &&
+            std::getline(iss, description, '|') >> std::ws &&
+            std::getline(iss, priceStr)) {
+
+            // Convert price string to double
+            std::istringstream priceStream(priceStr);
+            double price;
+            if (priceStream >> price) {
+                // Create FoodItem object
+                FoodItem foodItem;
+                foodItem.id = id;
+                foodItem.name = name;
+                foodItem.description = description;
+                foodItem.price.dollars = static_cast<unsigned>(price);
+                foodItem.price.cents = static_cast<unsigned>((price - static_cast<int>(price)) * 100);
+
+                // Insert into linked list
+                insertNode(foodItem);
+            } else {
+                std::cerr << "Error: Invalid price format." << std::endl;
+            }
+        } else {
             std::cerr << "Error: Invalid line format." << std::endl;
-            continue;
         }
-
-        // Convert price string to double
-        std::istringstream priceStream(priceStr);
-        double price;
-        if (!(priceStream >> price)) {
-            std::cerr << "Error: Invalid price format." << std::endl;
-            continue;
-        }
-
-        // Create FoodItem object
-        FoodItem foodItem;
-        foodItem.id = id;
-        foodItem.name = name;
-        foodItem.description = description;
-        foodItem.price.dollars = static_cast<unsigned>(price);
-        foodItem.price.cents = static_cast<unsigned>((price - static_cast<int>(price)) * 100);
-
-        // Insert into linked list
-        insertNode(foodItem);
     }
 
     file.close();
+}
+
+FoodItem* LinkedList::getFoodItemById(const std::string& id) const {
+    Node* current = head;
+    FoodItem* foundItem = nullptr; // Initialize foundItem to nullptr
+    bool found = false; // Initialize found flag to false
+
+    while (current != nullptr && !found) { // Continue while loop until found or end of list
+        if (current->data->id == id) {
+            foundItem = current->data; // Assign the matching FoodItem to foundItem
+            found = true; // Set found flag to true
+        }
+        current = current->next;
+    }
+
+    return foundItem; // Return foundItem (nullptr if not found)
 }
