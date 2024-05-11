@@ -17,7 +17,7 @@ void Helper::printMainMenu(bool isAdmin)
 		std::cout << "    4. Add Food" << std::endl;
 		std::cout << "    5. Remove Food" << std::endl;
 		std::cout << "    6. Display Balance" << std::endl;
-		std::cout << "    7. Display Balance" << std::endl;
+		std::cout << "    7. Abort Program" << std::endl;
 	//}
 }
 

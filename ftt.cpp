@@ -9,21 +9,25 @@ void purchaseMeal(LinkedList& foodList, const std::vector<Coin>& coins) {
     std::cout << "Purchase Meal" << std::endl;
     std::cout << "-------------" << std::endl;
 
-    // Display instructions
-    std::cout << "Please enter the ID of the food you wish to purchase:" << std::endl;
-
-    // Assume you have a function getFoodItemById() in LinkedList to retrieve a FoodItem by ID
-    // Implement this function if not already done
+    // Loop until a valid food ID is entered
     std::string foodId;
-    std::cin >> foodId;
+    FoodItem* foodItemPtr = nullptr;
+    bool running = true;
+    while (running) {
+        // Display instructions
+        std::cout << "Please enter the ID of the food you wish to purchase:" << std::endl;
+        std::cin >> foodId;
 
-    // Retrieve the FoodItem from the linked list based on the provided ID
-    FoodItem* foodItemPtr = foodList.getFoodItemById(foodId);
+        // Retrieve the FoodItem from the linked list based on the provided ID
+        foodItemPtr = foodList.getFoodItemById(foodId);
 
-    // Check if the food item exists
-    if (foodItemPtr == nullptr) {
-        std::cerr << "Error: Food item not found." << std::endl;
-        return;
+        // Check if the food item exists
+        if (foodItemPtr == nullptr) {
+            std::cerr << "Error: Food item not found. Please try again." << std::endl;
+        } else {
+            // If food ID exists, break out of the loop
+            running = false;
+        }
     }
 
     // Dereference the pointer to access the actual FoodItem object
@@ -81,7 +85,6 @@ void purchaseMeal(LinkedList& foodList, const std::vector<Coin>& coins) {
 
     // Return to the main menu
     // Assuming you have a function displayMainMenu() to display the main menu
-    Helper::printMainMenu();
 }
 
 
@@ -95,7 +98,6 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	Helper::printMainMenu();
 	// Extract filenames from command line arguments
 	std::string foodsFile = argv[1];
 	std::string coinsFile = argv[2];
@@ -109,12 +111,14 @@ int main(int argc, char** argv)
     bool running = true;
 
 	while (running){
+        Helper::printMainMenu();
 		int option;
 		std::cin>>option;
         std::cout << "Select your option (1-7) : " << std::endl;
 		 
 		if (option == 1){
                 foodList.displayMenu();
+                std::cout<<std::endl;
 		}
         else if(option ==2){
 			purchaseMeal(foodList, coins);
