@@ -123,6 +123,9 @@ int main(int argc, char** argv)
 		else if (option == 3){
 			return EXIT_SUCCESS;
 		}
+        else{
+            running = false;
+        }
 
 
 	}
