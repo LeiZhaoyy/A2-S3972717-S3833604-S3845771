@@ -80,11 +80,10 @@ void purchaseMeal(LinkedList& foodList, const std::vector<Coin>& coins) {
     // If the purchase is cancelled, refund the payment
     if (remainingPayment > 0) {
         std::cout << "Refunding money..." << std::endl;
-        // Implement refund logic here
+        //TODO
     }
 
-    // Return to the main menu
-    // Assuming you have a function displayMainMenu() to display the main menu
+    
 }
 
 
@@ -136,7 +135,11 @@ int main(int argc, char** argv)
             if (!foodList.removeFoodItemById(foodId)) {
                 std::cout << "Food item with ID " << foodId << " not found." << std::endl;
             }
-        }else{
+        }
+        else if (option == 6){
+            Coin::displayBalanceSummary(coins);
+        }
+        else{
             foodList.saveToFile(foodsFile);
             Coin::saveCoinsToFile(coins, coinsFile);
             running = false;
