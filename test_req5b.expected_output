@@ -6,14 +6,17 @@ Administrator-Only Menu:
     4. Add Food
     5. Remove Food
     6. Display Balance
-    7. Abort Program   
-Select your option (1-7): 
+    7. Abort Program
+Select your option (1-7) :
 Purchase Meal
 -------------
 Please enter the ID of the food you wish to purchase:
-You have selected "Baklava - Rich middle eastern cake of thin layers of flaky pastry filled with nuts and honey". This will cost you $ 8.50.
+You have selected "Gnocchi - Italian pasta dish made from potato and served with a rich cheese sauce".
+This will cost you $12.50
 Please hand over the money - type in the value of each note/coin in cents.
-You still need to give us $ 8.50:
+You still need to give us $12.50: 1000
+You still need to give us $2.50: 500
+Your change is $1.00
 Thank you for your payment.
 Main Menu
     1. Display Meal Options
