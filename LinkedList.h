@@ -15,6 +15,10 @@ public:
     void loadFromFile(const std::string& filename);
 
     FoodItem* getFoodItemById(const std::string& id) const;
+    void saveToFile(const std::string& filename);
+    void addFoodItem();
+    bool removeFoodItemById(const std::string& id);
+    
 private:
     // the beginning of the list
     Node* head;

@@ -127,7 +127,18 @@ int main(int argc, char** argv)
 		else if (option == 3){
 			return EXIT_SUCCESS;
 		}
-        else{
+        else if (option == 4) {
+            foodList.addFoodItem();
+        } else if (option == 5) {
+            std::string foodId;
+            std::cout << "Enter the food id of the food to remove from the menu: ";
+            std::cin >> foodId;
+            if (!foodList.removeFoodItemById(foodId)) {
+                std::cout << "Food item with ID " << foodId << " not found." << std::endl;
+            }
+        }else{
+            foodList.saveToFile(foodsFile);
+            Coin::saveCoinsToFile(coins, coinsFile);
             running = false;
         }
 

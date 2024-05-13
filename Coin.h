@@ -26,6 +26,7 @@ public:
     unsigned count;
 
     static std::vector<Coin> processCoinsFile(const std::string& filename);
+        static void saveCoinsToFile(const std::vector<Coin>& coins, const std::string& filename);
 
 
 };
