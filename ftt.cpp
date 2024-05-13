@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include "Coin.h"
 
 #include "LinkedList.h"
