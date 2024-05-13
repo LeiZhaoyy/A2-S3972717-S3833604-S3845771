@@ -173,12 +173,18 @@ void LinkedList::addFoodItem() {
     std::cout << "This item \"" << newFood.name << " - " << newFood.description
               << "\" has now been added to the food menu." << std::endl;
 }
+
+
+
+
 bool LinkedList::removeFoodItemById(const std::string& id) {
     Node* current = head;
     Node* previous = nullptr;
+    bool found = false;
 
-    while (current != nullptr) {
+    while (current != nullptr && !found) {
         if (current->data->id == id) {
+            found = true;
             if (previous == nullptr) {
                 // Removing the head of the list
                 head = current->next;
@@ -192,10 +198,11 @@ bool LinkedList::removeFoodItemById(const std::string& id) {
 
             // Free memory and delete the node
             delete current;
-            return true;
         }
-        previous = current;
-        current = current->next;
+        else {
+            previous = current;
+            current = current->next;
+        }
     }
-    return false; // Return false if not found
+    return found; // Return false if not found
 }
