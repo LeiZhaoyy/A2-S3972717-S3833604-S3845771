@@ -2,6 +2,7 @@
 #define COIN_H
 //using namespace std;
 #include <string> // Include for std::string
+#include <vector>
 
 // Coin.h defines the coin structure for managing currency in the system. 
 #define DELIM ","  // delimiter 
