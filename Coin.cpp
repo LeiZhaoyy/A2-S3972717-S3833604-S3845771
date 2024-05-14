@@ -45,14 +45,14 @@ std::vector<Coin> Coin::processCoinsFile(const string& filename) {
     file.close();  // Close the file
     return coins;  // Return vector of Coin objects
 }
-void Coin::saveCoinsToFile(const std::vector<Coin>& coins, const std::string& filename) {
+void Coin::saveCoinsToFile(std::vector<Coin>& coins, const std::string& filename) {
     std::ofstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Error: Unable to open file for saving coins." << std::endl;
         return;
     }
 
-    for (const auto& coin : coins) {
+    for (auto& coin : coins) {
         file << static_cast<int>(coin.denom) << "," << coin.count << std::endl;
     }
 
