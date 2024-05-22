@@ -225,6 +225,8 @@ int main(int argc, char** argv)
 		}
 
 		else if (option == 3){
+            foodList.saveToFile(foodsFile);
+            Coin::saveCoinsToFile(coins, coinsFile);
 			return EXIT_SUCCESS;
 		}
         else if (option == 4) {
