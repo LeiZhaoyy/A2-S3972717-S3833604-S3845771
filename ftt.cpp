@@ -1,12 +1,59 @@
 #include <iostream>
-#include <limits>
-#include "Coin.h"
-
-#include "LinkedList.h"
-#include "Helper.h"
+#include <vector>
+#include <string>
 #include <iomanip>
+#include <algorithm>
+#include <limits>
+#include "LinkedList.h"
+#include "Coin.h"
+#include "Helper.h"
 
-void purchaseMeal(LinkedList& foodList, const std::vector<Coin>& coins) {
+
+void updateCoins(std::vector<Coin>& coins, int denomination, int count) {
+    for (auto& coin : coins) {
+        if (coin.denom == denomination) {
+            coin.count += count;
+            return; // Exit the function once the denomination is found and updated
+        }
+    }
+    // Handle case where the denomination was not found, if necessary
+}
+
+bool provideChange(std::vector<Coin>& coins, int change) {
+    std::vector<std::pair<int, int>> changeGiven;
+    bool success = true;
+
+    for (auto& coin : coins) {
+        if (change <= 0) {
+            break;
+        }
+        int denomValue = coin.denom;
+        int numCoins = std::min(change / denomValue, static_cast<int>(coin.count));
+        if (numCoins > 0) {
+            changeGiven.push_back({denomValue, numCoins});
+            change -= numCoins * denomValue;
+            coin.count -= numCoins;
+        }
+    }
+
+    if (change > 0) {
+        success = false;
+    }
+
+    if (success) {
+        // Display the change given
+        std::cout << "Your change is:" << std::endl;
+        for (const auto& cg : changeGiven) {
+            for (int i = 0; i < cg.second; ++i) {
+                std::cout << "$" << std::fixed << std::setprecision(2) << cg.first / 100.0 << std::endl;
+            }
+        }
+    }
+
+    return success;
+}
+
+void purchaseMeal(LinkedList& foodList, std::vector<Coin>& coins) {
     std::cout << "Purchase Meal" << std::endl;
     std::cout << "-------------" << std::endl;
 
@@ -48,111 +95,134 @@ void purchaseMeal(LinkedList& foodList, const std::vector<Coin>& coins) {
     int remainingPayment = totalPayment;
 
     while (remainingPayment > 0) {
-        std::cout << "You still need to give us $" << std::fixed << std::setprecision(2)
+        std::cout << "You still need to give us $ " << std::fixed << std::setprecision(2)
             << (remainingPayment / 100.0) << ": ";
 
-        // Read the amount of money provided by the user
         int payment;
         std::cin >> payment;
 
-        // Check if the input is valid
-        if (std::cin.fail()) {
-            std::cerr << "Error: Invalid input." << std::endl;
+        // Extract denominations from the coins vector
+        std::vector<int> denominations;
+        for (const Coin& coin : coins) {
+            denominations.push_back(coin.denom);
+        }
+
+        // Check if the input is valid and matches any of the allowed denominations
+        while (std::cin.fail() || std::find(denominations.begin(), denominations.end(), payment) == denominations.end()) {
+            std::cerr << "Error: Invalid input or denomination. Please use one of the allowed denominations." << std::endl;
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            continue;
+            std::cout << "Please enter a valid denomination: ";
+            std::cin >> payment;
         }
 
-        // Update the remaining payment
+        // Update the remaining payment and the coins vector
         remainingPayment -= payment;
+        updateCoins(coins, payment, 1); // Add the coin to the balance
+    }
 
-        // Check if the payment is sufficient
-        if (remainingPayment < 0) {
-            std::cerr << "Error: You have given too much money." << std::endl;
-            std::cout << "Your change is $" << std::fixed << std::setprecision(2)
-                << (-remainingPayment / 100.0) << std::endl;
-            break;
-        } else if (remainingPayment == 0) {
+    if (remainingPayment < 0) {
+        // Provide change if the user overpaid
+        int change = -remainingPayment;
+        if (!provideChange(coins, change)) {
+            std::cout << "Sorry, unable to provide exact change. Transaction cancelled." << std::endl;
+            updateCoins(coins, totalPayment - remainingPayment, -1); // Refund the payment
+        } else {
             std::cout << "Thank you for your payment." << std::endl;
-            break;
         }
-    }
-
-    // If the purchase is cancelled, refund the payment
-    if (remainingPayment > 0) {
+    } else if (remainingPayment == 0) {
+        std::cout << "Thank you for your payment." << std::endl;
+    } else {
         std::cout << "Refunding money..." << std::endl;
-        //TODO
+        updateCoins(coins, totalPayment - remainingPayment, -1); // Refund the payment
     }
-
-    
 }
 
 
 
 
-int main(int argc, char** argv)
-{
-	if (argc < 3)
-	{
-		std::cerr << "Usage: " << argv[0] << " <foodsfile> <coinsfile>" << std::endl;
-		return EXIT_FAILURE;
-	}
+int main(int argc, char** argv) {
+    bool hasError = false;
+    int exitCode = EXIT_SUCCESS;
 
-	// Extract filenames from command line arguments
-	std::string foodsFile = argv[1];
-	std::string coinsFile = argv[2];
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <foodsfile> <coinsfile>" << std::endl;
+        hasError = true;
+        exitCode = EXIT_FAILURE;
+    }
 
-	// Create an instance of the LinkedList class
-	LinkedList foodList;
-    std::vector<Coin> coins = Coin::processCoinsFile(coinsFile);
+    std::string foodsFile;
+    std::string coinsFile;
+    LinkedList foodList;
+    std::vector<Coin> coins;
 
-	// Load food data from the specified file
-	foodList.loadFromFile(foodsFile);
-    bool running = true;
+    if (!hasError) {
+        // Extract filenames from command line arguments
+        foodsFile = argv[1];
+        coinsFile = argv[2];
 
-	while (running){
-        Helper::printMainMenu();
-		int option;
-		std::cin>>option;
-        std::cout << "Select your option (1-7) : " << std::endl;
-		 
-		if (option == 1){
+        // Process the coin file
+        coins = Coin::processCoinsFile(coinsFile);
+
+        // Check if there was an error in processing the coin file
+        if (coins.empty()) {
+            std::cerr << "Error: Invalid coin file or file contains invalid denominations." << std::endl;
+            hasError = true;
+            exitCode = EXIT_FAILURE;
+        }
+    }
+
+    if (!hasError) {
+        foodList.loadFromFile(foodsFile);
+        bool running = true;
+        while (running) {
+            
+            bool validInput = false;
+            int option;
+
+            while (!validInput) {
+                Helper::printMainMenu();
+                std::cout << "Select your option (1-7)  : ";
+                std::cin >> option;
+
+                if (std::cin.fail()) {
+                    std::cin.clear(); // clear the error flag
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                    std::cout << "Invalid input. Please enter a number between 1 and 7." << std::endl;
+                } else if (option < 1 || option > 7) {
+                    std::cout << "Invalid choice. Please select a valid option (1-7)." << std::endl;
+                } else {
+                    validInput = true;
+                }
+            }
+
+            if (option == 1) {
                 foodList.displayMenu();
-                std::cout<<std::endl;
-		}
-        else if(option ==2){
-			purchaseMeal(foodList, coins);
-		}
-
-		else if (option == 3){
-			return EXIT_SUCCESS;
-		}
-        else if (option == 4) {
-            foodList.addFoodItem();
-        } else if (option == 5) {
-            std::string foodId;
-            std::cout << "Enter the food id of the food to remove from the menu: ";
-            std::cin >> foodId;
-            if (!foodList.removeFoodItemById(foodId)) {
-                std::cout << "Food item with ID " << foodId << " not found." << std::endl;
+                std::cout << std::endl;
+            } else if (option == 2) {
+                purchaseMeal(foodList, coins);
+            } else if (option == 3) {
+                foodList.saveToFile(foodsFile);
+                Coin::saveCoinsToFile(coins, coinsFile);
+                running = false;
+            } else if (option == 4) {
+                foodList.addFoodItem();
+            } else if (option == 5) {
+                std::string foodId;
+                std::cout << "Enter the food id of the food to remove from the menu: ";
+                std::cin >> foodId;
+                if (!foodList.removeFoodItemById(foodId)) {
+                    std::cout << "Food item with ID " << foodId << " not found." << std::endl;
+                }
+            } else if (option == 6) {
+                Coin::displayBalanceSummary(coins);
+            } else if (option == 7) {
+                foodList.saveToFile(foodsFile);
+                Coin::saveCoinsToFile(coins, coinsFile);
+                running = false;
             }
         }
-        else if (option == 6){
-            Coin::displayBalanceSummary(coins);
-        }
-        else{
-            foodList.saveToFile(foodsFile);
-            Coin::saveCoinsToFile(coins, coinsFile);
-            running = false;
-        }
+    }
 
-
-	}
-
-
-
-
-
+    return exitCode;
 }
-
-

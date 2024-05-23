@@ -10,5 +10,4 @@ Node::Node() {
 // Destructor
 Node::~Node() {
     delete data; // Free the memory allocated for the FoodItem object
-    // Note: If the FoodItem object itself allocates dynamic memory, you might need additional cleanup here
 }
