@@ -157,9 +157,21 @@ void LinkedList::addFoodItem() {
     std::cout << "Enter the item description: ";
     getline(std::cin, description);
     newFood.description = description;
-
-    std::cout << "Enter the price for this item (in cents): ";
-    std::cin >> price; // Assuming the input is in dollars, not cents, based on the format "8.00"
+     // Error check for the price input
+    bool validPrice = false;
+    while (!validPrice) {
+        std::cout << "Enter the price for this item (in cents): ";
+        if (!(std::cin >> price)) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input. Please enter a valid price." << std::endl;
+        } else if (price <= 0) {
+            std::cout << "Price must be greater than zero. Please enter a valid price." << std::endl;
+        } else {
+            validPrice = true;
+        }
+    }
+   // std::cin >> price; // Assuming the input is in dollars, not cents, based on the format "8.00"
     newFood.price.dollars = static_cast<unsigned>(price);
     newFood.price.cents = static_cast<unsigned>((price - newFood.price.dollars) * 100);
 
