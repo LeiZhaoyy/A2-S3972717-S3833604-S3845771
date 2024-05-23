@@ -176,18 +176,24 @@ int main(int argc, char** argv) {
     bool running = !hasError;
     while (running) {
         Helper::printMainMenu();
-        int option;
-        std::cout << "Select your option (1-7): ";
-        std::cin >> option;
+		int option;
+		std::cin>>option;
+        std::cout << "Select your option (1-7) : " << std::endl;
+		 
+		if (option == 1){
+                foodList.displayMenu();
+                std::cout<<std::endl;
+		}
+        else if(option ==2){
+			purchaseMeal(foodList, coins);
+		}
 
-        if (option == 1) {
-            foodList.displayMenu();
-            std::cout << std::endl;
-        } else if (option == 2) {
-            purchaseMeal(foodList, coins);
-        } else if (option == 3) {
-            running = false;
-        } else if (option == 4) {
+		else if (option == 3){
+            foodList.saveToFile(foodsFile);
+            Coin::saveCoinsToFile(coins, coinsFile);
+			return EXIT_SUCCESS;
+		}
+        else if (option == 4) {
             foodList.addFoodItem();
         } else if (option == 5) {
             std::string foodId;
