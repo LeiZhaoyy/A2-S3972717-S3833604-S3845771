@@ -134,8 +134,8 @@ void LinkedList::saveToFile(const std::string& filename) {
 
     file.close();
 }
+
 void LinkedList::addFoodItem() {
-    getchar();
     FoodItem newFood;
     std::string name, description;
     double price;
@@ -143,24 +143,25 @@ void LinkedList::addFoodItem() {
     // Generate the next food item ID
     unsigned nextID = count + 1; // Assuming 'count' tracks the number of FoodItems
     newFood.id = "F" + std::to_string(nextID);
-    while(newFood.id.length() < 5) {
+    while (newFood.id.length() < 5) {
         newFood.id.insert(1, "0"); // Ensure the ID is 5 characters long
     }
 
     // Prompt user for food item details
     std::cout << "This new meal item will have the Item id of " << newFood.id << "." << std::endl;
     std::cout << "Enter the item name: ";
-    std::cin.ignore(); // Important to clear the newline character left in the input buffer
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the newline character left in the input buffer
     getline(std::cin, name);
     newFood.name = name;
 
     std::cout << "Enter the item description: ";
     getline(std::cin, description);
     newFood.description = description;
-     // Error check for the price input
+
+    // Error check for the price input
     bool validPrice = false;
     while (!validPrice) {
-        std::cout << "Enter the price for this item (in cents): ";
+        std::cout << "Enter the price for this item (in dollars): ";
         if (!(std::cin >> price)) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -171,7 +172,7 @@ void LinkedList::addFoodItem() {
             validPrice = true;
         }
     }
-   // std::cin >> price; // Assuming the input is in dollars, not cents, based on the format "8.00"
+
     newFood.price.dollars = static_cast<unsigned>(price);
     newFood.price.cents = static_cast<unsigned>((price - newFood.price.dollars) * 100);
 
@@ -206,7 +207,7 @@ bool LinkedList::removeFoodItemById(const std::string& id) {
             }
             // Output the confirmation message
             std::cout << "\"" << current->data->id << " – " << current->data->name << " - "
-                      << current->data->description << "\" has been removed from the system." << std::endl;
+                    << current->data->description << "\" has been removed from the system." << std::endl;
 
             // Free memory and delete the node
             delete current;

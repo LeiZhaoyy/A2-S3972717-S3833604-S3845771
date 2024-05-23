@@ -262,6 +262,8 @@ void Coin::saveCoinsToFile(std::vector<Coin>& coins, const std::string& filename
     file.close();
 }
 
+
+
 void Coin::displayBalanceSummary(const std::vector<Coin>& coins) {
     cout << "Balance Summary" << endl;
     cout << "-------------" << endl;
@@ -282,6 +284,7 @@ void Coin::displayBalanceSummary(const std::vector<Coin>& coins) {
     sort(sortedDenoms.begin(), sortedDenoms.end());
 
     double totalValue = 0;
+    int valueWidth = 7; // Width for the values to be right-aligned
 
     for (const auto& denom : sortedDenoms) {
         auto coinIt = find_if(coins.begin(), coins.end(), [&](const Coin& coin) {
@@ -289,9 +292,9 @@ void Coin::displayBalanceSummary(const std::vector<Coin>& coins) {
         });
 
         if (coinIt != coins.end()) {
-            cout << left << setw(6) << denom << " |";
+            cout << left << setw(6) << denom << " | ";
             cout << setw(9) << coinIt->count << " |";
-            cout << "$ " << setw(7) << fixed << setprecision(2) << denomValue[denom] << endl;
+            cout << "$ " << setw(valueWidth) << right << fixed << setprecision(2) << denomValue[denom] << endl;
             totalValue += denomValue[denom];
         }
     }

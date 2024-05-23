@@ -6,7 +6,7 @@ using namespace std;
 
 void Helper::printMainMenu(bool isAdmin)
 {
-	std::cout << "Main Menu" << std::endl;
+	std::cout << "Main Menu:" << std::endl;
 	std::cout << "    1. Display Meal Options" << std::endl;
 	std::cout << "    2. Purchase Meal" << std::endl;
 	std::cout << "    3. Save and Exit" << std::endl;

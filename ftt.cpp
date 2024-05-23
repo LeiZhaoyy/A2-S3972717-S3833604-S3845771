@@ -95,7 +95,7 @@ void purchaseMeal(LinkedList& foodList, std::vector<Coin>& coins) {
     int remainingPayment = totalPayment;
 
     while (remainingPayment > 0) {
-        std::cout << "You still need to give us $" << std::fixed << std::setprecision(2)
+        std::cout << "You still need to give us $ " << std::fixed << std::setprecision(2)
             << (remainingPayment / 100.0) << ": ";
 
         int payment;
@@ -140,6 +140,7 @@ void purchaseMeal(LinkedList& foodList, std::vector<Coin>& coins) {
 
 
 
+
 int main(int argc, char** argv) {
     bool hasError = false;
     int exitCode = EXIT_SUCCESS;
@@ -171,43 +172,55 @@ int main(int argc, char** argv) {
         }
     }
 
-    
-    foodList.loadFromFile(foodsFile);
-    bool running = !hasError;
-    while (running) {
-        Helper::printMainMenu();
-		int option;
-		std::cin>>option;
-        std::cout << "Select your option (1-7) : " << std::endl;
-		 
-		if (option == 1){
-                foodList.displayMenu();
-                std::cout<<std::endl;
-		}
-        else if(option ==2){
-			purchaseMeal(foodList, coins);
-		}
+    if (!hasError) {
+        foodList.loadFromFile(foodsFile);
+        bool running = true;
+        while (running) {
+            
+            bool validInput = false;
+            int option;
 
-		else if (option == 3){
-            foodList.saveToFile(foodsFile);
-            Coin::saveCoinsToFile(coins, coinsFile);
-			return EXIT_SUCCESS;
-		}
-        else if (option == 4) {
-            foodList.addFoodItem();
-        } else if (option == 5) {
-            std::string foodId;
-            std::cout << "Enter the food id of the food to remove from the menu: ";
-            std::cin >> foodId;
-            if (!foodList.removeFoodItemById(foodId)) {
-                std::cout << "Food item with ID " << foodId << " not found." << std::endl;
+            while (!validInput) {
+                Helper::printMainMenu();
+                std::cout << "Select your option (1-7)  : ";
+                std::cin >> option;
+
+                if (std::cin.fail()) {
+                    std::cin.clear(); // clear the error flag
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+                    std::cout << "Invalid input. Please enter a number between 1 and 7." << std::endl;
+                } else if (option < 1 || option > 7) {
+                    std::cout << "Invalid choice. Please select a valid option (1-7)." << std::endl;
+                } else {
+                    validInput = true;
+                }
             }
-        } else if (option == 6) {
-            Coin::displayBalanceSummary(coins);
-        } else {
-            foodList.saveToFile(foodsFile);
-            Coin::saveCoinsToFile(coins, coinsFile);
-            running = false;
+
+            if (option == 1) {
+                foodList.displayMenu();
+                std::cout << std::endl;
+            } else if (option == 2) {
+                purchaseMeal(foodList, coins);
+            } else if (option == 3) {
+                foodList.saveToFile(foodsFile);
+                Coin::saveCoinsToFile(coins, coinsFile);
+                running = false;
+            } else if (option == 4) {
+                foodList.addFoodItem();
+            } else if (option == 5) {
+                std::string foodId;
+                std::cout << "Enter the food id of the food to remove from the menu: ";
+                std::cin >> foodId;
+                if (!foodList.removeFoodItemById(foodId)) {
+                    std::cout << "Food item with ID " << foodId << " not found." << std::endl;
+                }
+            } else if (option == 6) {
+                Coin::displayBalanceSummary(coins);
+            } else if (option == 7) {
+                foodList.saveToFile(foodsFile);
+                Coin::saveCoinsToFile(coins, coinsFile);
+                running = false;
+            }
         }
     }
 
