@@ -223,6 +223,16 @@ void LinkedList::addFoodItem() {
     auto h = head;
     while (h->next != nullptr)  h = h->next;
 
+    std::string numericPart = h->data->id.substr(1);
+
+    int number = std::stoi(numericPart);
+
+    number++;
+
+    std::stringstream ss;
+    ss << "F" << std::setw(4) << std::setfill('0') << number;
+
+
     // Generate the next food item ID
     unsigned nextID = count + 1; // Assuming 'count' tracks the number of FoodItems
     newFood.id = "F" + std::to_string(nextID);
