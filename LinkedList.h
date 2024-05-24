@@ -12,7 +12,7 @@ public:
     void displayList() const; // Display the linked list
     // more functions to be added perhaps...
     void displayMenu() const;
-    void loadFromFile(const std::string& filename);
+    bool loadFromFile(const std::string& filename);
 
     FoodItem* getFoodItemById(const std::string& id) const;
     void saveToFile(const std::string& filename);

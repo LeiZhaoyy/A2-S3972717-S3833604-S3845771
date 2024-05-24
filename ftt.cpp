@@ -54,6 +54,7 @@ bool provideChange(std::vector<Coin>& coins, int change) {
 }
 
 
+//PURCHASE MEAL METHOD
 void purchaseMeal(LinkedList& foodList, std::vector<Coin>& coins) {
     std::cout << "Purchase Meal" << std::endl;
     std::cout << "-------------" << std::endl;
@@ -62,80 +63,114 @@ void purchaseMeal(LinkedList& foodList, std::vector<Coin>& coins) {
     std::string foodId;
     FoodItem* foodItemPtr = nullptr;
     bool running = true;
+    bool cancel = false;
+
     while (running) {
         // Display instructions
         std::cout << "Please enter the ID of the food you wish to purchase:" << std::endl;
         std::cin >> foodId;
 
-        // Retrieve the FoodItem from the linked list based on the provided ID
-        foodItemPtr = foodList.getFoodItemById(foodId);
-
-        // Check if the food item exists
-        if (foodItemPtr == nullptr) {
-            std::cerr << "Error: Food item not found. Please try again." << std::endl;
-        } else {
-            // If food ID exists, break out of the loop
-            running = false;
-        }
-    }
-
-    // Dereference the pointer to access the actual FoodItem object
-    FoodItem foodItem = *foodItemPtr;
-
-    // Display the selected food item and its price
-    std::cout << "You have selected \"" << foodItem.name << " - " << foodItem.description << "\"." << std::endl;
-    std::cout << "This will cost you $" << std::fixed << std::setprecision(2) << foodItem.price.dollars +
-        (foodItem.price.cents / 100.0) << std::endl;
-
-    // Collect payment from the user
-    std::cout << "Please hand over the money - type in the value of each note/coin in cents." << std::endl;
-    std::cout << "Please enter ctrl-D or enter on a new line to cancel this purchase." << std::endl;
-
-    // Initialize variables to keep track of the total payment
-    int totalPayment = foodItem.price.dollars * 100 + foodItem.price.cents;
-    int remainingPayment = totalPayment;
-
-    while (remainingPayment > 0) {
-        std::cout << "You still need to give us $ " << std::fixed << std::setprecision(2)
-            << (remainingPayment / 100.0) << ": ";
-
-        int payment;
-        std::cin >> payment;
-
-        // Extract denominations from the coins vector
-        std::vector<int> denominations;
-        for (const Coin& coin : coins) {
-            denominations.push_back(coin.denom);
-        }
-
-        // Check if the input is valid and matches any of the allowed denominations
-        while (std::cin.fail() || std::find(denominations.begin(), denominations.end(), payment) == denominations.end()) {
-            std::cerr << "Error: Invalid input or denomination. Please use one of the allowed denominations." << std::endl;
+        // Check for EOF (Ctrl-D) to cancel
+        if (std::cin.eof()) {
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Please enter a valid denomination: ";
-            std::cin >> payment;
-        }
+            cancel = true;
+            running = false;
+        } else {
+            // Retrieve the FoodItem from the linked list based on the provided ID
+            foodItemPtr = foodList.getFoodItemById(foodId);
 
-        // Update the remaining payment and the coins vector
-        remainingPayment -= payment;
-        updateCoins(coins, payment, 1); // Add the coin to the balance
+            // Check if the food item exists
+            if (foodItemPtr == nullptr) {
+                std::cerr << "Error: Food item not found. Please try again." << std::endl;
+            } else {
+                // If food ID exists, break out of the loop
+                running = false;
+            }
+        }
     }
 
-    if (remainingPayment < 0) {
-        // Provide change if the user overpaid
-        int change = -remainingPayment;
-        if (!provideChange(coins, change)) {
-            std::cout << "Sorry, unable to provide exact change. Transaction cancelled." << std::endl;
-            updateCoins(coins, totalPayment - remainingPayment, -1); // Refund the payment
-        } else {
-            std::cout << "Thank you for your payment." << std::endl;
+    if (!cancel && foodItemPtr != nullptr) {
+        // Dereference the pointer to access the actual FoodItem object
+        FoodItem foodItem = *foodItemPtr;
+
+        // Display the selected food item and its price
+        std::cout << "You have selected \"" << foodItem.name << " - " << foodItem.description << "\"." << std::endl;
+        std::cout << "This will cost you $" << std::fixed << std::setprecision(2) 
+                  << foodItem.price.dollars + (foodItem.price.cents / 100.0) << std::endl;
+
+        // Collect payment from the user
+        std::cout << "Please hand over the money - type in the value of each note/coin in cents." << std::endl;
+        std::cout << "Please enter ctrl-D or enter on a new line to cancel this purchase." << std::endl;
+
+        // Initialize variables to keep track of the total payment
+        int totalPayment = foodItem.price.dollars * 100 + foodItem.price.cents;
+        int remainingPayment = totalPayment;
+        running = true;
+
+        while (running && remainingPayment > 0) {
+            std::cout << "You still need to give us $ " << std::fixed << std::setprecision(2)
+                      << (remainingPayment / 100.0) << ": ";
+
+            int payment;
+            std::cin >> payment;
+
+            // Check for EOF (Ctrl-D) to cancel
+            if (std::cin.eof()) {
+                std::cin.clear();
+                cancel = true;
+                running = false;
+            } else {
+                // Extract denominations from the coins vector
+                std::vector<int> denominations;
+                for (const Coin& coin : coins) {
+                    denominations.push_back(coin.denom);
+                }
+
+                // Check if the input is valid and matches any of the allowed denominations
+                while (!cancel && (std::cin.fail() || std::find(denominations.begin(), denominations.end(), payment) == denominations.end())) {
+                    std::cerr << "Error: Invalid input or denomination. Please use one of the allowed denominations." << std::endl;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Please enter a valid denomination: ";
+                    std::cin >> payment;
+
+                    // Check for EOF (Ctrl-D) again after error correction
+                    if (std::cin.eof()) {
+                        std::cin.clear();
+                        cancel = true;
+                        running = false;
+                    }
+                }
+
+                if (!cancel) {
+                    // Update the remaining payment and the coins vector
+                    remainingPayment -= payment;
+                    updateCoins(coins, payment, 1); // Add the coin to the balance
+                }
+            }
         }
-    } else if (remainingPayment == 0) {
-        std::cout << "Thank you for your payment." << std::endl;
-    } else {
-        std::cout << "Refunding money..." << std::endl;
-        updateCoins(coins, totalPayment - remainingPayment, -1); // Refund the payment
+
+        if (!cancel) {
+            if (remainingPayment < 0) {
+                // Provide change if the user overpaid
+                int change = -remainingPayment;
+                if (!provideChange(coins, change)) {
+                    std::cout << "Sorry, unable to provide exact change. Transaction cancelled." << std::endl;
+                    updateCoins(coins, totalPayment - remainingPayment, -1); // Refund the payment
+                } else {
+                    std::cout << "Thank you for your payment." << std::endl;
+                }
+            } else if (remainingPayment == 0) {
+                std::cout << "Thank you for your payment." << std::endl;
+            } else {
+                std::cout << "Refunding money..." << std::endl;
+                updateCoins(coins, totalPayment - remainingPayment, -1); // Refund the payment
+            }
+        }
+    }
+
+    if (cancel) {
+        std::cout << "Purchase cancelled." << std::endl;
     }
 }
 
@@ -172,9 +207,10 @@ int main(int argc, char** argv) {
             exitCode = EXIT_FAILURE;
         }
     }
-
+    if (!(foodList.loadFromFile(foodsFile))){
+            hasError = true;
+        }
     if (!hasError) {
-        foodList.loadFromFile(foodsFile);
         bool running = true;
         while (running) {
             bool validInput = false;
