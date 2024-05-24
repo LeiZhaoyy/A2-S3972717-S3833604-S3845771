@@ -8,11 +8,7 @@ Administrator-Only Menu:
     6. Display Balance
     7. Abort Program
 Select your option (1-7) : 
-This new meal item will have the Item id of F0008.
-Enter the item name: Shish Kebab
-Enter the item description: a dish consisting of small cubes of meat threaded on a skewer that are grilled or roasted
-Enter the price for this item (in cents): 800
-This item "Shish Kebab - a" has now been added to the food menu.
+Enter the food id of the food to remove from the menu: "F0001 – Baklava - Rich middle eastern cake of thin layers of flaky pastry filled with nuts and honey" has been removed from the system.
 Main Menu
     1. Display Meal Options
     2. Purchase Meal
@@ -27,14 +23,14 @@ Food Menu
 ---------
 ID   |Name                                     |Length
 ------------------------------------------------------------------
-F0001|Baklava                                  |$8.50
 F0002|Gnocchi                                  |$12.50
 F0003|Haggis                                   |$18.69
-F0004|Jambalaya                                |$23.00
 F0005|Bibimbab                                 |$15.80
 F0006|Fondue                                   |$31.50
 F0007|Kelewele                                 |$11.50
-F0008|Shish Kebab                               |$8.00
+F0008|feds                                     |$10.00
+F0009|chicken                                  |$13.00
+
 Main Menu
     1. Display Meal Options
     2. Purchase Meal

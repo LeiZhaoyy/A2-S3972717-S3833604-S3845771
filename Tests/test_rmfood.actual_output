@@ -25,10 +25,11 @@ ID   |Name                                     |Length
 ------------------------------------------------------------------
 F0002|Gnocchi                                  |$12.50
 F0003|Haggis                                   |$18.69
-F0004|Jambalaya                                |$23.00
 F0005|Bibimbab                                 |$15.80
 F0006|Fondue                                   |$31.50
 F0007|Kelewele                                 |$11.50
+F0008|feds                                     |$10.00
+F0009|chicken                                  |$13.00
 
 Main Menu
     1. Display Meal Options
