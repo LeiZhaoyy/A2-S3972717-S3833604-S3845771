@@ -10,6 +10,7 @@
 
 using namespace std;
 
+//Method to check for valid denoms
 bool Coin::isValidDenomination(int value) {
     static const unordered_set<int> validDenominations = {
         FIVE_CENTS, TEN_CENTS, TWENTY_CENTS, FIFTY_CENTS,
@@ -20,6 +21,7 @@ bool Coin::isValidDenomination(int value) {
     return validDenominations.find(value) != validDenominations.end();
 }
 
+//Processes the coins file
 std::vector<Coin> Coin::processCoinsFile(const string& filename) {
     vector<Coin> coins;
     ifstream file(filename);
@@ -69,6 +71,8 @@ std::vector<Coin> Coin::processCoinsFile(const string& filename) {
 }
 
 
+
+//saves coins if no errors present
 void Coin::saveCoinsToFile(std::vector<Coin>& coins, const std::string& filename) {
     ofstream file(filename);
     if (!file.is_open()) {
@@ -84,7 +88,7 @@ void Coin::saveCoinsToFile(std::vector<Coin>& coins, const std::string& filename
 }
 
 
-
+//displays balance
 void Coin::displayBalanceSummary(const std::vector<Coin>& coins) {
     cout << "Balance Summary" << endl;
     cout << "-------------" << endl;
