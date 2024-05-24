@@ -220,6 +220,8 @@ void LinkedList::addFoodItem() {
     FoodItem newFood;
     std::string name, description;
     double price;
+    auto h = head;
+    while (h->next != nullptr)  h = h->next;
 
     // Generate the next food item ID
     unsigned nextID = count + 1; // Assuming 'count' tracks the number of FoodItems
