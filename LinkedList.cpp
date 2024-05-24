@@ -1,15 +1,4 @@
 
-
-
-
-
-
-
-
-//HAIHSDFKJBDF
-
-
-
 #include "LinkedList.h"
 #include <iostream>
 #include <iomanip> // For setw
@@ -85,12 +74,13 @@ void LinkedList::displayList() const {
     }
 }
 
-// Function to load food items from a file and insert them alphabetically
-void LinkedList::loadFromFile(const std::string& filename) {
+
+bool LinkedList::loadFromFile(const std::string& filename) {
+    bool loaded = true;
     std::ifstream file(filename);
     if (!file.is_open()) {
-        std::cerr << "Error: Unable to open file." << std::endl;
-        return;
+        std::cerr << "Error: Unable to open food file." << std::endl;
+        loaded = false;
     }
 
     std::string line;
@@ -127,7 +117,12 @@ void LinkedList::loadFromFile(const std::string& filename) {
     }
 
     file.close();
+    return loaded;
 }
+
+
+
+
 
 FoodItem* LinkedList::getFoodItemById(const std::string& id) const {
     Node* current = head;
@@ -164,57 +159,7 @@ void LinkedList::saveToFile(const std::string& filename) {
     file.close();
 }
 
-// void LinkedList::addFoodItem() {
-//     FoodItem newFood;
-//     std::string name, description;
-//     double price;
 
-//     // Generate the next food item ID
-//     unsigned nextID = count + 1; // Assuming 'count' tracks the number of FoodItems
-//     newFood.id = "F" + std::to_string(nextID);
-//     while (newFood.id.length() < 5) {
-//         newFood.id.insert(1, "0"); // Ensure the ID is 5 characters long
-//     }
-
-//     // Prompt user for food item details
-//     std::cout << "This new meal item will have the Item id of " << newFood.id << "." << std::endl;
-//     std::cout << "Enter the item name: ";
-//     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the newline character left in the input buffer
-//     getline(std::cin, name);
-//     newFood.name = name;
-
-//     std::cout << "Enter the item description: ";
-//     getline(std::cin, description);
-//     newFood.description = description;
-
-//     // Error check for the price input
-//     bool validPrice = false;
-//     while (!validPrice) {
-//         std::cout << "Enter the price for this item (in dollars): ";
-//         if (!(std::cin >> price)) {
-//             std::cin.clear();
-//             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-//             std::cout << "Invalid input. Please enter a valid price." << std::endl;
-//         } else if (price <= 0) {
-//             std::cout << "Price must be greater than zero. Please enter a valid price." << std::endl;
-//         } else {
-//             validPrice = true;
-//         }
-//     }
-
-//     newFood.price.dollars = static_cast<unsigned>(price);
-//     newFood.price.cents = static_cast<unsigned>((price - newFood.price.dollars) * 100);
-
-//     // Assign default on-hand value
-//     newFood.on_hand = DEFAULT_FOOD_STOCK_LEVEL;
-
-//     // Insert the new food item into the list in alphabetical order
-//     insertNode(newFood);
-
-//     // Output the confirmation message
-//     std::cout << "This item \"" << newFood.name << " - " << newFood.description
-//               << "\" has now been added to the food menu." << std::endl;
-// }
 
 void LinkedList::addFoodItem() {
     FoodItem newFood;
