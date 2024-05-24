@@ -9,6 +9,9 @@
 #include "Helper.h"
 
 
+
+
+
 void updateCoins(std::vector<Coin>& coins, int denomination, int count) {
     for (auto& coin : coins) {
         if (coin.denom == denomination) {
@@ -22,17 +25,21 @@ void updateCoins(std::vector<Coin>& coins, int denomination, int count) {
 bool provideChange(std::vector<Coin>& coins, int change) {
     std::vector<std::pair<int, int>> changeGiven;
     bool success = true;
+    bool done = false;
 
     for (auto& coin : coins) {
-        if (change <= 0) {
-            break;
-        }
-        int denomValue = coin.denom;
-        int numCoins = std::min(change / denomValue, static_cast<int>(coin.count));
-        if (numCoins > 0) {
-            changeGiven.push_back({denomValue, numCoins});
-            change -= numCoins * denomValue;
-            coin.count -= numCoins;
+        if (!done) {
+            int denomValue = coin.denom;
+            int numCoins = std::min(change / denomValue, static_cast<int>(coin.count)); // Cast coin.count to int
+            if (numCoins > 0) {
+                changeGiven.push_back({denomValue, numCoins});
+                change -= numCoins * denomValue;
+                coin.count -= numCoins;
+            }
+
+            if (change <= 0) {
+                done = true;
+            }
         }
     }
 
@@ -44,17 +51,23 @@ bool provideChange(std::vector<Coin>& coins, int change) {
         // Display the change given
         std::cout << "Your change is:" << std::endl;
         for (const auto& cg : changeGiven) {
-            for (int i = 0; i < cg.second; ++i) {
-                std::cout << "$" << std::fixed << std::setprecision(2) << cg.first / 100.0 << std::endl;
-            }
+            std::cout << "$" << std::fixed << std::setprecision(2) << cg.first / 100.0 << " x " << cg.second << std::endl;
         }
+    } else {
+        // If unable to provide exact change, refund the coins added back to the vector
+        for (const auto& cg : changeGiven) {
+            updateCoins(coins, cg.first, cg.second);
+        }
+        std::cout << "Sorry, unable to provide exact change. Transaction cancelled." << std::endl;
     }
 
     return success;
 }
 
+int roundToNearest(int amount, int nearest) {
+    return std::round(static_cast<double>(amount) / nearest) * nearest;
+}
 
-//PURCHASE MEAL METHOD
 void purchaseMeal(LinkedList& foodList, std::vector<Coin>& coins) {
     std::cout << "Purchase Meal" << std::endl;
     std::cout << "-------------" << std::endl;
@@ -95,15 +108,17 @@ void purchaseMeal(LinkedList& foodList, std::vector<Coin>& coins) {
 
         // Display the selected food item and its price
         std::cout << "You have selected \"" << foodItem.name << " - " << foodItem.description << "\"." << std::endl;
-        std::cout << "This will cost you $" << std::fixed << std::setprecision(2) 
-                  << foodItem.price.dollars + (foodItem.price.cents / 100.0) << std::endl;
+        int priceInCents = foodItem.price.dollars * 100 + foodItem.price.cents;
+        int roundedPriceInCents = roundToNearest(priceInCents, 5); // Round to the nearest 5 cents
+        std::cout << "This will cost you $" << std::fixed << std::setprecision(2)
+                  << roundedPriceInCents / 100.0 << " (rounded to the nearest 5 cents)" << std::endl;
 
         // Collect payment from the user
         std::cout << "Please hand over the money - type in the value of each note/coin in cents." << std::endl;
         std::cout << "Please enter ctrl-D or enter on a new line to cancel this purchase." << std::endl;
 
         // Initialize variables to keep track of the total payment
-        int totalPayment = foodItem.price.dollars * 100 + foodItem.price.cents;
+        int totalPayment = roundedPriceInCents;
         int remainingPayment = totalPayment;
         running = true;
 

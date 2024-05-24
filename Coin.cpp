@@ -1,5 +1,3 @@
-
-
 #include "Coin.h"
 #include <iostream>
 #include <fstream>
@@ -107,7 +105,7 @@ void Coin::displayBalanceSummary(const std::vector<Coin>& coins) {
     sort(sortedDenoms.begin(), sortedDenoms.end());
 
     double totalValue = 0;
-    int valueWidth = 7; // Width for the values to be right-aligned
+    int valueWidth = 6; // Width for the values to be right-aligned
 
     for (const auto& denom : sortedDenoms) {
         auto coinIt = find_if(coins.begin(), coins.end(), [&](const Coin& coin) {
